@@ -1,80 +1,123 @@
-import React from "react";
-import Banner from "@/components/containers/Banner";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
+import { Montserrat } from "next/font/google";
+import Banner from "@/components/containers/Banner";
 import NavMenu from "@/components/containers/NavMenu";
 import MustRead from "@/components/containers/MustRead";
 import Footer from "@/components/containers/Footer";
-import { Montserrat } from "next/font/google";
 import LatestBlogs from "@/components/containers/LatestBlogs";
+import {
+  callBackendApi,
+  getDomain,
+  getImagePath,
+  getProjectId,
+} from "@/lib/myFun";
+import GoogleTagManager from "@/lib/GoogleTagManager";
 
 const myFont = Montserrat({ subsets: ["cyrillic"] });
 
-export default function Home({ logo, logo_black, banner, blog_list }) {
+export default function Home({
+  logo,
+  logo_black,
+  banner,
+  blog_list,
+  project_id,
+  imagePath,
+  meta,
+}) {
+  const [domainName, setDomainName] = useState("");
+  useEffect(() => {
+    fetch("/api/domain")
+      .then((response) => response.json())
+      .then((data) => {
+        setDomainName(data.domainName);
+      });
+  }, []);
+
   return (
     <div className={myFont.className}>
       <Head>
-        <title>Digital Spy</title>
+        <meta charSet="UTF-8" />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <link rel="author" href={`http://${domainName}`} />
+        <link rel="publisher" href={`http://${domainName}`} />
+        <link rel="canonical" href={`http://${domainName}`} />
+        <meta name="robots" content="noindex" />
+        <meta name="theme-color" content="#008DE5" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <GoogleTagManager />
+        <meta
+          name="google-site-verification"
+          content="zbriSQArMtpCR3s5simGqO5aZTDqEZZi9qwinSrsRPk"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href={`https://api15.ecommcube.com/${domainName}/apple-touch-icon.png`}
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href={`https://api15.ecommcube.com/${domainName}/favicon-32x32.png`}
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href={`https://api15.ecommcube.com/${domainName}/favicon-16x16.png`}
+        />
       </Head>
       <Banner
-        logo={logo_black}
+        image={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${banner.file_name}`}
         badge={banner.value.badge}
         title={banner.value.title}
         tagline={banner.value.tagline}
-        image={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/industry_template_images/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/${banner?.file_name}`}
+        logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
       />
       <NavMenu logo={logo} />
-      <MustRead articles={blog_list} />
+      <MustRead articles={blog_list} project_id={project_id} />
       <LatestBlogs blogs={blog_list} />
       <Footer
-        logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/industry_template_images/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/${logo?.file_name}`}
+        logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
       />
     </div>
   );
 }
 
-export async function getStaticProps() {
-  const _logo_black = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_SITE_MANAGER
-    }/api/public/industry_template_data/${
-      process.env.NEXT_PUBLIC_INDUSTRY_ID
-    }/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/data/${"logo_black"}`
-  );
-  const logo_black = await _logo_black.json();
+export async function getServerSideProps({ req, query }) {
+  const domain = getDomain(req?.headers?.host);
+  const project_id = getProjectId(query);
+  const imagePath = await getImagePath({ domain, query });
 
-  const _logo = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_SITE_MANAGER
-    }/api/public/industry_template_data/${
-      process.env.NEXT_PUBLIC_INDUSTRY_ID
-    }/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/data/${"logo"}`
-  );
-  const logo = await _logo.json();
+  const logo_black = await callBackendApi({
+    domain,
+    query,
+    type: "logo_black",
+  });
 
-  const _banner = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_SITE_MANAGER
-    }/api/public/industry_template_data/${
-      process.env.NEXT_PUBLIC_INDUSTRY_ID
-    }/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/data/${"banner"}`
-  );
-  const banner = await _banner.json();
+  const logo = await callBackendApi({
+    domain,
+    query,
+    type: "logo",
+  });
 
-  const _blog_list = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_SITE_MANAGER
-    }/api/public/industry_template_data/${
-      process.env.NEXT_PUBLIC_INDUSTRY_ID
-    }/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/data/${"blog_list"}`
-  );
-  const blog_list = await _blog_list.json();
+  const banner = await callBackendApi({ domain, query, type: "banner" });
+  const blog_list = await callBackendApi({ domain, query, type: "blog_list" });
+  const meta = await callBackendApi({ domain, query, type: "meta_home" });
 
   return {
     props: {
-      logo_black: logo_black.data[0],
+      logo_black: logo_black?.data[0] || null,
       logo: logo.data[0],
       banner: banner.data[0],
       blog_list: blog_list.data[0].value,
+      meta: meta.data[0].value,
+      imagePath,
+      project_id,
     },
   };
 }

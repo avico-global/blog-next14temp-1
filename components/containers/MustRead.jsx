@@ -1,11 +1,11 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
-import SectionHeading from "../common/SectionHeading";
-import FullContainer from "../common/FullContainer";
+import Image from "next/image";
 import Container from "../common/Container";
+import FullContainer from "../common/FullContainer";
+import SectionHeading from "../common/SectionHeading";
 
-export default function MustRead({ articles }) {
+export default function MustRead({ articles, project_id }) {
   return (
     <FullContainer className="py-16">
       <Container>
@@ -13,7 +13,13 @@ export default function MustRead({ articles }) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5 lg:gap-7 mt-10 w-full">
           {articles.map((item, index) => (
             <Link
-              href={item.title?.toLowerCase().replaceAll(" ", "-")}
+              href={
+                project_id
+                  ? `/${item.title
+                      ?.toLowerCase()
+                      .replaceAll(" ", "-")}?${project_id}`
+                  : `/${item.title?.toLowerCase().replaceAll(" ", "-")}`
+              }
               key={index}
               title={item.imageTitle}
             >

@@ -18,7 +18,7 @@ export default function Banner({
   logo,
 }) {
   return (
-    <div className="lg:h-[calc(100vh-150px)] 2xl:h-[calc(100vh-230px)] overflow-hidden relative w-full flex flex-col justify-between p-10">
+    <div className="lg:min-h-[calc(100vh-150px)] 2xl:min-h-[calc(100vh-230px)] overflow-hidden relative w-full flex flex-col justify-between p-10">
       <Image
         src={image}
         alt="Background Image"
@@ -31,13 +31,13 @@ export default function Banner({
         <Image
           height={100}
           width={200}
-          src={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/industry_template_images/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/${logo?.file_name}`}
+          src={logo}
           alt="logo"
           className="ml-auto mr-auto"
         />
       </div>
       <FullContainer className="flex-1 text-white">
-        <Container className="gap-5 bg-black/50 p-9 max-w-2xl text-center">
+        <Container className="gap-5 bg-black/50 p-9 my-9 max-w-2xl text-center">
           {badge && <Badge>{badge}</Badge>}
           <h1
             className={cn(
