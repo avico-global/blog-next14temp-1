@@ -42,8 +42,8 @@ export default function Blog({
     <div className={myFont.className}>
       <Head>
         <meta charSet="UTF-8" />
-        <title>{meta.title}</title>
-        <meta name="description" content={meta.description} />
+        <title>{myblog?.value?.meta_title}</title>
+        <meta name="description" content={myblog?.value?.meta_description} />
         <link rel="author" href={`http://${domainName}`} />
         <link rel="publisher" href={`http://${domainName}`} />
         <link rel="canonical" href={`http://${domainName}`} />
