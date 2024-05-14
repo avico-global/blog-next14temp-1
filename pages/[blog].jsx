@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FullContainer from "@/components/common/FullContainer";
 import Container from "@/components/common/Container";
 import Banner from "@/components/containers/Banner";
@@ -14,24 +14,75 @@ import {
   getImagePath,
   getProjectId,
 } from "@/lib/myFun";
+import GoogleTagManager from "@/lib/GoogleTagManager";
 
 const myFont = Montserrat({ subsets: ["cyrillic"] });
 
-export default function Blog({ logo, myblog, blog_list }) {
+export default function Blog({
+  logo,
+  myblog,
+  blog_list,
+  project_id,
+  meta,
+  imagePath,
+}) {
   const markdownIt = new MarkdownIt();
   const content = markdownIt.render(myblog?.value.articleContent);
+
+  const [domainName, setDomainName] = useState("");
+  useEffect(() => {
+    fetch("/api/domain")
+      .then((response) => response.json())
+      .then((data) => {
+        setDomainName(data.domainName);
+      });
+  }, []);
 
   return (
     <div className={myFont.className}>
       <Head>
-        <title>{myblog?.value.title} | Next 14 Template</title>
+        <meta charSet="UTF-8" />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <link rel="author" href={`http://${domainName}`} />
+        <link rel="publisher" href={`http://${domainName}`} />
+        <link rel="canonical" href={`http://${domainName}`} />
+        <meta name="robots" content="noindex" />
+        <meta name="theme-color" content="#008DE5" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <GoogleTagManager />
+        <meta
+          name="google-site-verification"
+          content="zbriSQArMtpCR3s5simGqO5aZTDqEZZi9qwinSrsRPk"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href={`https://api15.ecommcube.com/${domainName}/apple-touch-icon.png`}
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href={`https://api15.ecommcube.com/${domainName}/favicon-32x32.png`}
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href={`https://api15.ecommcube.com/${domainName}/favicon-16x16.png`}
+        />
       </Head>
-      <NavMenu logo={logo} />
+      <NavMenu
+        logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
+      />
       <Banner
-        logo={logo}
+        // logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
         title={myblog?.value.title}
         tagline={myblog?.value.tagline}
-        image={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/industry_template_images/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/${myblog?.file_name}`}
+        image={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`}
         author={myblog?.value.author}
         published_at={myblog?.value.published_at}
       />
@@ -50,9 +101,13 @@ export default function Blog({ logo, myblog, blog_list }) {
           </div>
         </Container>
       </FullContainer>
-      <LatestBlogs blogs={blog_list} />
+      <LatestBlogs
+        blogs={blog_list}
+        project_id={project_id}
+        imagePath={imagePath}
+      />
       <Footer
-        logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/industry_template_images/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/${logo?.file_name}`}
+        logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
       />
     </div>
   );
@@ -79,12 +134,14 @@ export async function getServerSideProps({ params, req, query }) {
     };
   }
   const logo = await callBackendApi({ domain, query, type: "logo" });
+  const meta = await callBackendApi({ domain, query, type: "meta_home" });
 
   return {
     props: {
       logo: logo.data[0],
       myblog: blog.data[0],
       blog_list: blog_list.data[0].value,
+      meta: meta.data[0].value,
       imagePath,
       project_id,
     },

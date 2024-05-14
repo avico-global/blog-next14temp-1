@@ -27,15 +27,17 @@ export default function Banner({
         loading="eager"
         className="-z-10 w-full h-full object-cover absolute top-0"
       />
-      <div className="flex items-center justify-center">
-        <Image
-          height={100}
-          width={200}
-          src={logo}
-          alt="logo"
-          className="ml-auto mr-auto"
-        />
-      </div>
+      {logo && (
+        <div className="flex items-center justify-center">
+          <Image
+            height={100}
+            width={200}
+            src={logo}
+            alt="logo"
+            className="ml-auto mr-auto"
+          />
+        </div>
+      )}
       <FullContainer className="flex-1 text-white">
         <Container className="gap-5 bg-black/50 p-9 my-9 max-w-2xl text-center">
           {badge && <Badge>{badge}</Badge>}

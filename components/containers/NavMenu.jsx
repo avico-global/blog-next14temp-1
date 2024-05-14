@@ -23,7 +23,7 @@ export default function NavMenu({ logo }) {
               <Image
                 height={70}
                 width={120}
-                src={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/industry_template_images/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/${logo?.file_name}`}
+                src={logo}
                 alt="logo"
                 className="mt-1"
               />
@@ -54,7 +54,7 @@ export default function NavMenu({ logo }) {
               <Image
                 height={70}
                 width={140}
-                src={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/industry_template_images/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/${logo?.file_name}`}
+                src={logo}
                 alt="logo"
                 className="mt-1"
               />

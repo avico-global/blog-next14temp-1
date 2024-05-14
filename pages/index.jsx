@@ -78,9 +78,15 @@ export default function Home({
         tagline={banner.value.tagline}
         logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
       />
-      <NavMenu logo={logo} />
+      <NavMenu
+        logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
+      />
       <MustRead articles={blog_list} project_id={project_id} />
-      <LatestBlogs blogs={blog_list} />
+      <LatestBlogs
+        blogs={blog_list}
+        project_id={project_id}
+        imagePath={imagePath}
+      />
       <Footer
         logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
       />

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SectionHeading from "../common/SectionHeading";
 
-export default function LatestBlogs({ blogs }) {
+export default function LatestBlogs({ blogs, project_id, imagePath }) {
   return (
     <FullContainer className="py-16 text-center">
       <Container>
@@ -18,8 +18,9 @@ export default function LatestBlogs({ blogs }) {
               author={item.author}
               date={item.published_at}
               tagline={item.tagline}
+              project_id={project_id}
               description={item.articleContent}
-              image={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/industry_template_images/${process.env.NEXT_PUBLIC_TEMPLATE_ID}/${item.image}`}
+              image={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${item.image}`}
             />
           ))}
         </div>
@@ -28,9 +29,15 @@ export default function LatestBlogs({ blogs }) {
   );
 }
 
-function BlogCard({ title, image, description }) {
+function BlogCard({ title, image, description, project_id }) {
   return (
-    <Link href={title?.toLowerCase().replaceAll(" ", "-")}>
+    <Link
+      href={
+        project_id
+          ? `/${title?.toLowerCase().replaceAll(" ", "-")}?${project_id}`
+          : `/${title?.toLowerCase().replaceAll(" ", "-")}`
+      }
+    >
       <div className="relative overflow-hidden w-full h-96 hover:opacity-80 transition-all">
         <Image
           src={image}
