@@ -18,6 +18,7 @@ import GoogleTagManager from "@/lib/GoogleTagManager";
 import JsonLd from "@/components/json/JsonLd";
 import useBreadcrumbs from "@/utils/useBreadcrumbs";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
+import { useRouter } from "next/router";
 
 const myFont = Montserrat({ subsets: ["cyrillic"] });
 
@@ -40,6 +41,8 @@ export default function Blog({
         setDomainName(data.domainName);
       });
   }, []);
+
+  const router = useRouter();
 
   return (
     <div className={myFont.className}>
@@ -161,7 +164,7 @@ export default function Blog({
             },
             {
               "@type": "BlogPosting",
-              "@id": `http://${domainName}#blogpost`,
+              "@id": `http://${domainName}${router.asPath}#blogpost`,
               headline: myblog?.value.title,
               image: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
               articleBody: content,
