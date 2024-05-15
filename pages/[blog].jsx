@@ -16,6 +16,7 @@ import {
 } from "@/lib/myFun";
 import GoogleTagManager from "@/lib/GoogleTagManager";
 import JsonLd from "@/components/json/JsonLd";
+import useBreadcrumbs from "@/utils/useBreadcrumbs";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 
 const myFont = Montserrat({ subsets: ["cyrillic"] });
@@ -25,11 +26,11 @@ export default function Blog({
   myblog,
   blog_list,
   project_id,
-  meta,
   imagePath,
 }) {
   const markdownIt = new MarkdownIt();
   const content = markdownIt.render(myblog?.value.articleContent);
+  const breadcrumbs = useBreadcrumbs();
 
   const [domainName, setDomainName] = useState("");
   useEffect(() => {
@@ -80,7 +81,6 @@ export default function Blog({
       <NavMenu
         logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
       />
-      <Breadcrumbs />
       <Banner
         // logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
         title={myblog?.value.title}
@@ -89,6 +89,7 @@ export default function Blog({
         author={myblog?.value.author}
         published_at={myblog?.value.published_at}
       />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       <FullContainer>
         <Container className="py-16">
           <div className="grid grid-cols-1 md:grid-cols-home gap-14 w-full">
@@ -124,6 +125,19 @@ export default function Blog({
           author: myblog?.value.author,
           image: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
           publisher: "Site Manager",
+        }}
+      />
+
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: breadcrumbs.map((breadcrumb, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: breadcrumb.label,
+            item: `https://${domainName}${breadcrumb.url}`,
+          })),
         }}
       />
     </div>
