@@ -14,12 +14,12 @@ import {
 } from "@/lib/myFun";
 import GoogleTagManager from "@/lib/GoogleTagManager";
 import JsonLd from "@/components/json/JsonLd";
+import useBreadcrumbs from "@/utils/useBreadcrumbs";
 
 const myFont = Montserrat({ subsets: ["cyrillic"] });
 
 export default function Home({
   logo,
-  logo_black,
   banner,
   blog_list,
   project_id,
@@ -34,6 +34,8 @@ export default function Home({
         setDomainName(data.domainName);
       });
   }, []);
+
+  const breadcrumbs = useBreadcrumbs();
 
   return (
     <div className={myFont.className}>
@@ -126,26 +128,14 @@ export default function Home({
               ],
             },
             {
+              "@context": "https://schema.org",
               "@type": "BreadcrumbList",
-              "@id": `http://${domainName}/#breadcrumb`,
-              itemListElement: [
-                {
-                  "@type": "ListItem",
-                  position: 1,
-                  item: {
-                    "@id": `http://${domainName}/`,
-                    name: "Home",
-                  },
-                },
-                {
-                  "@type": "ListItem",
-                  position: 2,
-                  item: {
-                    "@id": `http://${domainName}/articles`,
-                    name: "Articles",
-                  },
-                },
-              ],
+              itemListElement: breadcrumbs.map((breadcrumb, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                name: breadcrumb.label,
+                item: `https://${domainName}${breadcrumb.url}`,
+              })),
             },
             {
               "@type": "ItemList",

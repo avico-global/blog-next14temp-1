@@ -150,23 +150,18 @@ export default function Blog({
               },
             },
             {
-              "@type": "Person",
-              name: myblog?.value.author,
-              url: `http://${domainName}/author/${myblog?.value.author_slug}`,
-            },
-            {
+              "@context": "https://schema.org",
               "@type": "BreadcrumbList",
-              "@id": `http://${domainName}/blog#breadcrumb`,
               itemListElement: breadcrumbs.map((breadcrumb, index) => ({
                 "@type": "ListItem",
                 position: index + 1,
                 name: breadcrumb.label,
-                item: `http://${domainName}${breadcrumb.url}`,
+                item: `https://${domainName}${breadcrumb.url}`,
               })),
             },
             {
               "@type": "BlogPosting",
-              "@id": `http://${domainName}${router.asPath}#blogpost`,
+              "@id": `http://${domainName}#blogpost`,
               headline: myblog?.value.title,
               image: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
               articleBody: content,
