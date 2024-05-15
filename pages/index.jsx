@@ -13,6 +13,7 @@ import {
   getProjectId,
 } from "@/lib/myFun";
 import GoogleTagManager from "@/lib/GoogleTagManager";
+import JsonLd from "@/components/json/JsonLd";
 
 const myFont = Montserrat({ subsets: ["cyrillic"] });
 
@@ -89,6 +90,74 @@ export default function Home({
       />
       <Footer
         logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
+      />
+
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              "@id": `http://${domainName}/#webpage`,
+              url: `http://${domainName}/`,
+              name: meta.title,
+              isPartOf: {
+                "@id": `http://${domainName}/#website`,
+              },
+              description: meta.description,
+              breadcrumb: {
+                "@id": `http://${domainName}/#breadcrumb`,
+              },
+              inLanguage: "en-US",
+            },
+            {
+              "@type": "Organization",
+              "@id": `http://${domainName}/#organization`,
+              name: "Your Organization Name",
+              url: `http://${domainName}/`,
+              logo: {
+                "@type": "ImageObject",
+                url: `http://${domainName}/path/to/logo.png`,
+              },
+              sameAs: [
+                "http://www.facebook.com/yourprofile",
+                "http://www.twitter.com/yourprofile",
+                "http://instagram.com/yourprofile",
+              ],
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": `http://${domainName}/#breadcrumb`,
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  item: {
+                    "@id": `http://${domainName}/`,
+                    name: "Home",
+                  },
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  item: {
+                    "@id": `http://${domainName}/articles`,
+                    name: "Articles",
+                  },
+                },
+              ],
+            },
+            {
+              "@type": "ItemList",
+              itemListElement: blog_list.map((blog, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                url: `http://${domainName}/blog/${blog.slug}`,
+                name: blog.title,
+              })),
+            },
+          ],
+        }}
       />
     </div>
   );
