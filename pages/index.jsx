@@ -107,9 +107,6 @@ export default function Home({
                 "@id": `http://${domainName}/#website`,
               },
               description: meta.description,
-              breadcrumb: {
-                "@id": `http://${domainName}/#breadcrumb`,
-              },
               inLanguage: "en-US",
             },
             {

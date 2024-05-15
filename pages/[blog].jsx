@@ -120,62 +120,50 @@ export default function Blog({
       <JsonLd
         data={{
           "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "WebPage",
-              "@id": `http://${domainName}/blog#webpage`,
-              url: `http://${domainName}${router.asPath}`,
-              name: myblog?.value?.meta_title,
-              description: myblog?.value?.meta_description,
-              publisher: {
-                "@id": `http://${domainName}/#organization`,
-              },
-              breadcrumb: {
-                "@id": `http://${domainName}/blog#breadcrumb`,
-              },
-              inLanguage: "en-US",
-              isPartOf: { "@id": `http://${domainName}/#website` },
-              primaryImageOfPage: {
-                "@type": "ImageObject",
-                url: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
-              },
-              datePublished: myblog?.value.published_at,
-              dateModified: myblog?.value.published_at,
-            },
-            {
-              "@type": "Organization",
-              "@id": `http://${domainName}/#organization`,
-              name: "Site Manager",
-              url: `http://${domainName}`,
-              logo: {
-                "@type": "ImageObject",
-                url: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`,
-              },
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              itemListElement: breadcrumbs.map((breadcrumb, index) => ({
-                "@type": "ListItem",
-                position: index + 1,
-                name: breadcrumb.label,
-                item: `https://${domainName}${breadcrumb.url}`,
-              })),
-            },
-            {
-              "@type": "BlogPosting",
-              "@id": `http://${domainName}${router.asPath}#blogpost`,
-              headline: myblog?.value.title,
-              image: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
-              articleBody: content,
-              author: {
-                "@id": `http://${domainName}/author/${myblog?.value.author_slug}`,
-              },
-              mainEntityOfPage: {
-                "@id": `http://${domainName}/blog#webpage`,
-              },
-            },
-          ],
+          "@type": "BlogPosting",
+          headline: myblog?.value.title,
+          description: content,
+          datePublished: myblog?.value.published_at,
+          author: myblog?.value.author,
+          image: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
+          publisher: "Site Manager",
+        }}
+      />
+
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: breadcrumbs.map((breadcrumb, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: breadcrumb.label,
+            item: `https://${domainName}${breadcrumb.url}`,
+          })),
+        }}
+      />
+
+      <JsonLd
+        data={{
+          "@type": "WebPage",
+          "@id": `http://${domainName}/blog#webpage`,
+          url: `http://${domainName}${router.asPath}`,
+          name: myblog?.value?.meta_title,
+          description: myblog?.value?.meta_description,
+          publisher: {
+            "@id": `http://${domainName}/#organization`,
+          },
+          breadcrumb: {
+            "@id": `http://${domainName}/blog#breadcrumb`,
+          },
+          inLanguage: "en-US",
+          isPartOf: { "@id": `http://${domainName}/#website` },
+          primaryImageOfPage: {
+            "@type": "ImageObject",
+            url: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
+          },
+          datePublished: myblog?.value.published_at,
+          dateModified: myblog?.value.published_at,
         }}
       />
     </div>
