@@ -119,7 +119,6 @@ export default function Blog({
           "@context": "https://schema.org",
           "@type": "BlogPosting",
           headline: myblog?.value.title,
-          tagline: myblog?.value.tagline,
           description: content,
           datePublished: myblog?.value.published_at,
           author: myblog?.value.author,
