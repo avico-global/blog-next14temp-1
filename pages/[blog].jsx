@@ -15,6 +15,8 @@ import {
   getProjectId,
 } from "@/lib/myFun";
 import GoogleTagManager from "@/lib/GoogleTagManager";
+import JsonLd from "@/components/json/JsonLd";
+import Breadcrumbs from "@/components/common/Breadcrumbs";
 
 const myFont = Montserrat({ subsets: ["cyrillic"] });
 
@@ -78,6 +80,7 @@ export default function Blog({
       <NavMenu
         logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
       />
+      <Breadcrumbs />
       <Banner
         // logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
         title={myblog?.value.title}
@@ -108,6 +111,20 @@ export default function Blog({
       />
       <Footer
         logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
+      />
+
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: myblog?.value.title,
+          tagline: myblog?.value.tagline,
+          description: content,
+          datePublished: myblog?.value.published_at,
+          author: myblog?.value.author,
+          image: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
+          publisher: "Site Manager",
+        }}
       />
     </div>
   );
