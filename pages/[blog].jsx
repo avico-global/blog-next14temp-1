@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import FullContainer from "@/components/common/FullContainer";
 import Container from "@/components/common/Container";
 import Banner from "@/components/containers/Banner";
@@ -18,7 +18,6 @@ import GoogleTagManager from "@/lib/GoogleTagManager";
 import JsonLd from "@/components/json/JsonLd";
 import useBreadcrumbs from "@/utils/useBreadcrumbs";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
-import { useRouter } from "next/router";
 
 const myFont = Montserrat({ subsets: ["cyrillic"] });
 
@@ -33,8 +32,6 @@ export default function Blog({
   const markdownIt = new MarkdownIt();
   const content = markdownIt.render(myblog?.value.articleContent);
   const breadcrumbs = useBreadcrumbs();
-
-  const router = useRouter();
 
   return (
     <div className={myFont.className}>
@@ -77,7 +74,6 @@ export default function Blog({
         logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
       />
       <Banner
-        // logo={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`}
         title={myblog?.value.title}
         tagline={myblog?.value.tagline}
         image={`${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`}
@@ -112,70 +108,64 @@ export default function Blog({
       <JsonLd
         data={{
           "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          headline: myblog?.value.title,
-          description: content,
-          datePublished: myblog?.value.published_at,
-          author: myblog?.value.author,
-          image: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
-          publisher: "Site Manager",
-        }}
-      />
-
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: breadcrumbs.map((breadcrumb, index) => ({
-            "@type": "ListItem",
-            position: index + 1,
-            name: breadcrumb.label,
-            item: `https://${domain}${breadcrumb.url}`,
-          })),
-        }}
-      />
-
-      <JsonLd
-        data={{
-          "@type": "ItemList",
-          itemListElement: blog_list.map((blog, index) => ({
-            "@type": "ListItem",
-            position: index + 1,
-            url: `http://${domain}/${blog?.title
-              ?.toLowerCase()
-              .replaceAll(" ", "-")}`,
-            name: blog.title,
-          })),
-        }}
-      />
-
-      <JsonLd
-        data={{
-          "@type": "WebPage",
-          "@id": `http://${domain}/${myblog?.value.title
-            ?.toLowerCase()
-            .replaceAll(" ", "-")}`,
-          url: `http://${domain}${myblog?.value.title
-            ?.toLowerCase()
-            .replaceAll(" ", "-")}`,
-          name: myblog?.value?.meta_title,
-          description: myblog?.value?.meta_description,
-          publisher: {
-            "@id": `domain`,
-          },
-          breadcrumb: {
-            "@id": `http://${domain}/${myblog?.value.title
-              ?.toLowerCase()
-              .replaceAll(" ", "-")}`,
-          },
-          inLanguage: "en-US",
-          isPartOf: { "@id": `http://${domain}` },
-          primaryImageOfPage: {
-            "@type": "ImageObject",
-            url: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
-          },
-          datePublished: myblog?.value.published_at,
-          dateModified: myblog?.value.published_at,
+          "@graph": [
+            {
+              "@type": "BlogPosting",
+              headline: myblog?.value.title,
+              description: content,
+              datePublished: myblog?.value.published_at,
+              author: myblog?.value.author,
+              image: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
+              publisher: "Site Manager",
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: breadcrumbs.map((breadcrumb, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                name: breadcrumb.label,
+                item: `http:/${domain}${breadcrumb.url}`,
+              })),
+            },
+            {
+              "@type": "ItemList",
+              itemListElement: blog_list.map((blog, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                url: `http://${domain}/${blog?.title
+                  ?.toLowerCase()
+                  .replaceAll(" ", "-")}`,
+                name: blog.title,
+              })),
+            },
+            {
+              "@type": "WebPage",
+              "@id": `http://${domain}/${myblog?.value.title
+                ?.toLowerCase()
+                .replaceAll(" ", "-")}`,
+              url: `http://${domain}${myblog?.value.title
+                ?.toLowerCase()
+                .replaceAll(" ", "-")}`,
+              name: myblog?.value?.meta_title,
+              description: myblog?.value?.meta_description,
+              publisher: {
+                "@id": `http://${domain}`,
+              },
+              breadcrumb: {
+                "@id": `http://${domain}/${myblog?.value.title
+                  ?.toLowerCase()
+                  .replaceAll(" ", "-")}`,
+              },
+              inLanguage: "en-US",
+              isPartOf: { "@id": `http://${domain}` },
+              primaryImageOfPage: {
+                "@type": "ImageObject",
+                url: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
+              },
+              datePublished: myblog?.value.published_at,
+              dateModified: myblog?.value.published_at,
+            },
+          ],
         }}
       />
     </div>
