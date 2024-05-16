@@ -28,19 +28,11 @@ export default function Blog({
   blog_list,
   project_id,
   imagePath,
+  domain,
 }) {
   const markdownIt = new MarkdownIt();
   const content = markdownIt.render(myblog?.value.articleContent);
   const breadcrumbs = useBreadcrumbs();
-
-  const [domainName, setDomainName] = useState("");
-  useEffect(() => {
-    fetch("/api/domain")
-      .then((response) => response.json())
-      .then((data) => {
-        setDomainName(data.domainName);
-      });
-  }, []);
 
   const router = useRouter();
 
@@ -50,9 +42,9 @@ export default function Blog({
         <meta charSet="UTF-8" />
         <title>{myblog?.value?.meta_title}</title>
         <meta name="description" content={myblog?.value?.meta_description} />
-        <link rel="author" href={`http://${domainName}`} />
-        <link rel="publisher" href={`http://${domainName}`} />
-        <link rel="canonical" href={`http://${domainName}`} />
+        <link rel="author" href={`http://${domain}`} />
+        <link rel="publisher" href={`http://${domain}`} />
+        <link rel="canonical" href={`http://${domain}`} />
         <meta name="robots" content="noindex" />
         <meta name="theme-color" content="#008DE5" />
         <link rel="manifest" href="/manifest.json" />
@@ -66,19 +58,19 @@ export default function Blog({
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href={`https://api15.ecommcube.com/${domainName}/apple-touch-icon.png`}
+          href={`https://api15.ecommcube.com/${domain}/apple-touch-icon.png`}
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href={`https://api15.ecommcube.com/${domainName}/favicon-32x32.png`}
+          href={`https://api15.ecommcube.com/${domain}/favicon-32x32.png`}
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href={`https://api15.ecommcube.com/${domainName}/favicon-16x16.png`}
+          href={`https://api15.ecommcube.com/${domain}/favicon-16x16.png`}
         />
       </Head>
       <NavMenu
@@ -138,7 +130,21 @@ export default function Blog({
             "@type": "ListItem",
             position: index + 1,
             name: breadcrumb.label,
-            item: `https://${domainName}${breadcrumb.url}`,
+            item: `https://${domain}${breadcrumb.url}`,
+          })),
+        }}
+      />
+
+      <JsonLd
+        data={{
+          "@type": "ItemList",
+          itemListElement: blog_list.map((blog, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: `http://${domain}/${blog?.title
+              ?.toLowerCase()
+              .replaceAll(" ", "-")}`,
+            name: blog.title,
           })),
         }}
       />
@@ -146,18 +152,24 @@ export default function Blog({
       <JsonLd
         data={{
           "@type": "WebPage",
-          "@id": `http://${domainName}/blog#webpage`,
-          url: `http://${domainName}${router.asPath}`,
+          "@id": `http://${domain}/${myblog?.value.title
+            ?.toLowerCase()
+            .replaceAll(" ", "-")}`,
+          url: `http://${domain}${myblog?.value.title
+            ?.toLowerCase()
+            .replaceAll(" ", "-")}`,
           name: myblog?.value?.meta_title,
           description: myblog?.value?.meta_description,
           publisher: {
-            "@id": `http://${domainName}/#organization`,
+            "@id": `domain`,
           },
           breadcrumb: {
-            "@id": `http://${domainName}/blog#breadcrumb`,
+            "@id": `http://${domain}/${myblog?.value.title
+              ?.toLowerCase()
+              .replaceAll(" ", "-")}`,
           },
           inLanguage: "en-US",
-          isPartOf: { "@id": `http://${domainName}/#website` },
+          isPartOf: { "@id": `http://${domain}` },
           primaryImageOfPage: {
             "@type": "ImageObject",
             url: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
@@ -201,6 +213,7 @@ export async function getServerSideProps({ params, req, query }) {
       meta: meta.data[0].value,
       imagePath,
       project_id,
+      domain: domain === "hellospace.us" ? req?.headers?.host : domain,
     },
   };
 }
