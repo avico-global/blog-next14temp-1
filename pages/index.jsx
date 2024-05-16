@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Head from "next/head";
 import { Montserrat } from "next/font/google";
 import Banner from "@/components/containers/Banner";
@@ -14,7 +14,6 @@ import {
 } from "@/lib/myFun";
 import GoogleTagManager from "@/lib/GoogleTagManager";
 import JsonLd from "@/components/json/JsonLd";
-import useBreadcrumbs from "@/utils/useBreadcrumbs";
 
 const myFont = Montserrat({ subsets: ["cyrillic"] });
 
@@ -27,7 +26,7 @@ export default function Home({
   meta,
   domain,
 }) {
-  const breadcrumbs = useBreadcrumbs();
+  console.log("Domain", domain);
 
   return (
     <div className={myFont.className}>
@@ -164,7 +163,7 @@ export async function getServerSideProps({ req, query }) {
       meta: meta.data[0].value,
       imagePath,
       project_id,
-      domain,
+      domain: domain === "hellospace.us" ? req?.headers?.host : domain,
     },
   };
 }
