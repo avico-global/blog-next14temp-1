@@ -121,7 +121,7 @@ export default function Home({
               itemListElement: blog_list.map((blog, index) => ({
                 "@type": "ListItem",
                 position: index + 1,
-                url: `http://${domain}/blog/${blog?.title
+                url: `http://${domain}/${blog?.title
                   ?.toLowerCase()
                   .replaceAll(" ", "-")}`,
                 name: blog.title,
