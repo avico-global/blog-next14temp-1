@@ -25,16 +25,8 @@ export default function Home({
   project_id,
   imagePath,
   meta,
+  domain,
 }) {
-  const [domainName, setDomainName] = useState("");
-  useEffect(() => {
-    fetch("/api/domain")
-      .then((response) => response.json())
-      .then((data) => {
-        setDomainName(data.domainName);
-      });
-  }, []);
-
   const breadcrumbs = useBreadcrumbs();
 
   return (
@@ -43,9 +35,9 @@ export default function Home({
         <meta charSet="UTF-8" />
         <title>{meta.title}</title>
         <meta name="description" content={meta.description} />
-        <link rel="author" href={`http://${domainName}`} />
-        <link rel="publisher" href={`http://${domainName}`} />
-        <link rel="canonical" href={`http://${domainName}`} />
+        <link rel="author" href={`http://${domain}`} />
+        <link rel="publisher" href={`http://${domain}`} />
+        <link rel="canonical" href={`http://${domain}`} />
         <meta name="robots" content="noindex" />
         <meta name="theme-color" content="#008DE5" />
         <link rel="manifest" href="/manifest.json" />
@@ -59,19 +51,19 @@ export default function Home({
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href={`https://api15.ecommcube.com/${domainName}/apple-touch-icon.png`}
+          href={`https://api15.ecommcube.com/${domain}/apple-touch-icon.png`}
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href={`https://api15.ecommcube.com/${domainName}/favicon-32x32.png`}
+          href={`https://api15.ecommcube.com/${domain}/favicon-32x32.png`}
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href={`https://api15.ecommcube.com/${domainName}/favicon-16x16.png`}
+          href={`https://api15.ecommcube.com/${domain}/favicon-16x16.png`}
         />
       </Head>
       <Banner
@@ -100,46 +92,36 @@ export default function Home({
           "@graph": [
             {
               "@type": "WebPage",
-              "@id": `http://${domainName}/#webpage`,
-              url: `http://${domainName}/`,
+              "@id": `http://${domain}/`,
+              url: `http://${domain}/`,
               name: meta.title,
               isPartOf: {
-                "@id": `http://${domainName}/#website`,
+                "@id": `http://${domain}`,
               },
               description: meta.description,
               inLanguage: "en-US",
             },
             {
               "@type": "Organization",
-              "@id": `http://${domainName}/#organization`,
-              name: "Your Organization Name",
-              url: `http://${domainName}/`,
+              "@id": `http://${domain}`,
+              name: domain,
+              url: `http://${domain}/`,
               logo: {
                 "@type": "ImageObject",
-                url: `http://${domainName}/path/to/logo.png`,
+                url: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${logo.file_name}`,
               },
               sameAs: [
-                "http://www.facebook.com/yourprofile",
-                "http://www.twitter.com/yourprofile",
-                "http://instagram.com/yourprofile",
+                "http://www.facebook.com",
+                "http://www.twitter.com",
+                "http://instagram.com",
               ],
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              itemListElement: breadcrumbs.map((breadcrumb, index) => ({
-                "@type": "ListItem",
-                position: index + 1,
-                name: breadcrumb.label,
-                item: `https://${domainName}${breadcrumb.url}`,
-              })),
             },
             {
               "@type": "ItemList",
               itemListElement: blog_list.map((blog, index) => ({
                 "@type": "ListItem",
                 position: index + 1,
-                url: `http://${domainName}/blog/${blog.slug}`,
+                url: `http://${domain}/blog/${blog.slug}`,
                 name: blog.title,
               })),
             },
@@ -180,6 +162,7 @@ export async function getServerSideProps({ req, query }) {
       meta: meta.data[0].value,
       imagePath,
       project_id,
+      domain,
     },
   };
 }
