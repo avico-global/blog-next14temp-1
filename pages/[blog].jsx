@@ -111,8 +111,14 @@ export default function Blog({
           "@graph": [
             {
               "@type": "BlogPosting",
+              mainEntityOfPage: {
+                "@type": "WebPage",
+                "@id": `http://${domain}/${blog?.title
+                  ?.toLowerCase()
+                  .replaceAll(" ", "-")}`,
+              },
               headline: myblog?.value.title,
-              description: content,
+              description: myblog?.value.articleContent,
               datePublished: myblog?.value.published_at,
               author: myblog?.value.author,
               image: `${process.env.NEXT_PUBLIC_SITE_MANAGER}/images/${imagePath}/${myblog?.file_name}`,
@@ -129,13 +135,18 @@ export default function Blog({
             },
             {
               "@type": "ItemList",
+              url: `http://${domain}/blogs`,
+              name: "blog",
               itemListElement: blog_list.map((blog, index) => ({
                 "@type": "ListItem",
                 position: index + 1,
-                url: `http://${domain}/${blog?.title
-                  ?.toLowerCase()
-                  .replaceAll(" ", "-")}`,
-                name: blog.title,
+                item: {
+                  "@type": "Article",
+                  url: `http://${domain}/${blog?.title
+                    ?.toLowerCase()
+                    .replaceAll(" ", "-")}`,
+                  name: blog.title,
+                },
               })),
             },
             {
@@ -143,7 +154,7 @@ export default function Blog({
               "@id": `http://${domain}/${myblog?.value.title
                 ?.toLowerCase()
                 .replaceAll(" ", "-")}`,
-              url: `http://${domain}${myblog?.value.title
+              url: `http://${domain}/${myblog?.value.title
                 ?.toLowerCase()
                 .replaceAll(" ", "-")}`,
               name: myblog?.value?.meta_title,
