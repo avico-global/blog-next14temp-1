@@ -113,9 +113,11 @@ export default function Blog({
               "@type": "BlogPosting",
               mainEntityOfPage: {
                 "@type": "WebPage",
-                "@id": `http://${domain}/${blog?.title
-                  ?.toLowerCase()
-                  .replaceAll(" ", "-")}`,
+                "@id": myblog
+                  ? `http://${domain}/${myblog.title
+                      ?.toLowerCase()
+                      .replaceAll(" ", "-")}`
+                  : "",
               },
               headline: myblog?.value.title,
               description: myblog?.value.articleContent,
@@ -130,19 +132,19 @@ export default function Blog({
                 "@type": "ListItem",
                 position: index + 1,
                 name: breadcrumb.label,
-                item: `http:/${domain}${breadcrumb.url}`,
+                item: `http://${domain}${breadcrumb.url}`,
               })),
             },
             {
               "@type": "ItemList",
               url: `http://${domain}/blogs`,
               name: "blog",
-              itemListElement: blog_list.map((blog, index) => ({
+              itemListElement: blog_list?.map((blog, index) => ({
                 "@type": "ListItem",
                 position: index + 1,
                 item: {
                   "@type": "Article",
-                  url: `http://${domain}/${blog?.title
+                  url: `http://${domain}/${blog.title
                     ?.toLowerCase()
                     .replaceAll(" ", "-")}`,
                   name: blog.title,

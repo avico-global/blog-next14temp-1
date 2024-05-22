@@ -26,8 +26,6 @@ export default function Home({
   meta,
   domain,
 }) {
-  console.log("Domain", domain);
-
   return (
     <div className={myFont.className}>
       <Head>
