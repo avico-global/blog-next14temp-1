@@ -114,7 +114,7 @@ export default function Blog({
               mainEntityOfPage: {
                 "@type": "WebPage",
                 "@id": myblog
-                  ? `http://${domain}/${myblog.title
+                  ? `http://${domain}/${myblog?.value.title
                       ?.toLowerCase()
                       .replaceAll(" ", "-")}`
                   : "",
@@ -163,11 +163,6 @@ export default function Blog({
               description: myblog?.value?.meta_description,
               publisher: {
                 "@id": `http://${domain}`,
-              },
-              breadcrumb: {
-                "@id": `http://${domain}/${myblog?.value.title
-                  ?.toLowerCase()
-                  .replaceAll(" ", "-")}`,
               },
               inLanguage: "en-US",
               isPartOf: { "@id": `http://${domain}` },
