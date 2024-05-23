@@ -115,13 +115,18 @@ export default function Home({
             },
             {
               "@type": "ItemList",
-              itemListElement: blog_list.map((blog, index) => ({
+              url: `http://${domain}`,
+              name: "blog",
+              itemListElement: blog_list?.map((blog, index) => ({
                 "@type": "ListItem",
                 position: index + 1,
-                url: `http://${domain}/${blog?.title
-                  ?.toLowerCase()
-                  .replaceAll(" ", "-")}`,
-                name: blog.title,
+                item: {
+                  "@type": "Article",
+                  url: `http://${domain}/${blog.title
+                    ?.toLowerCase()
+                    .replaceAll(" ", "-")}`,
+                  name: blog.title,
+                },
               })),
             },
           ],
