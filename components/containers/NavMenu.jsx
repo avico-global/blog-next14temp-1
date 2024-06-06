@@ -4,10 +4,16 @@ import Link from "next/link";
 import Image from "next/image";
 import FullContainer from "../common/FullContainer";
 import Container from "../common/Container";
+import { cn } from "@/lib/utils";
 
 const menuList = ["TV", "movies", "soaps", "tech", "news"];
 
-export default function NavMenu({ logo }) {
+export default function NavMenu({
+  logo,
+  blog_categories,
+  project_id,
+  category,
+}) {
   const [sidebar, setSidebar] = useState(false);
 
   return (
@@ -29,16 +35,23 @@ export default function NavMenu({ logo }) {
               />
             </Link>
             <div className="text-lg font-bold hidden lg:flex items-center gap-5">
-              {menuList.map((item, index) => (
-                <div className="uppercase font-extrabold" key={index}>
+              {blog_categories?.map((item, index) => (
+                <Link
+                  key={index}
+                  href={
+                    project_id
+                      ? `/categories/${item}?${project_id}`
+                      : `/categories/${item}`
+                  }
+                  className={cn(
+                    "uppercase font-extrabold",
+                    category === item && "border-b-2 mt-[2px] border-purple-500"
+                  )}
+                >
                   {item}
-                </div>
+                </Link>
               ))}
             </div>
-          </div>
-          <div className="hidden md:flex items-center justify-end font-extrabold gap-5">
-            <p>FORUMS</p>
-            <p>NEWSLETTER</p>
           </div>
         </Container>
       </FullContainer>
